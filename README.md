@@ -12,7 +12,7 @@ Berbasis UDP dan sudah menggunakan cipher rc4 encryption
 python server.py
 #### memberhentikan server
 tutup terminal 🙏
-   
+##
 ### untuk menjalankan client(s)
 #### python client.py /ip/ /port/ /username/ /password/
 contoh : python client.py 127.0.0.1 12345 hil secret
