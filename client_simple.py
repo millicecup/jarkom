@@ -1,7 +1,5 @@
 import socket
 import threading
-import argparse
-#import sys
 import time
 
 # Caesar Cipher Encryption
@@ -154,17 +152,14 @@ class ChatClient:
         print("[CLIENT] Connection closed")
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Secure Chat Client")
-    parser.add_argument("ip", help="Server IP address")
-    parser.add_argument("port", type=int, help="Server port")
-    parser.add_argument("username", help="Your username")
-    parser.add_argument("password", help="Chat room password")
-    
-    args = parser.parse_args()
+    # Request user input for server details
+    ip = input("Enter server IP address: ")
+    port = int(input("Enter server port: "))
+    username = input("Enter your username: ")
+    password = input("Enter chat room password: ")
     
     try:
-        client = ChatClient(args.ip, args.port, args.username, args.password)
+        client = ChatClient(ip, port, username, password)
         client.start()
     except Exception as e:
         print(f"[ERROR] Failed to start client: {str(e)}")
-        #sys.exit(1)
