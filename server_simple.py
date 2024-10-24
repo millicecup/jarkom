@@ -11,14 +11,10 @@ def caesar_encrypt(text, shift):
             encrypted.append(chr((ord(char) - shift_base + shift) % 26 + shift_base))
         else:
             encrypted.append(char)
-    result = ''.join(encrypted)
-    print(f"[Caesar Cipher] {text} -> {result}")
-    return result
+    return ''.join(encrypted)
 
 def caesar_decrypt(cipher, shift):
-    decrypted = caesar_encrypt(cipher, -shift)
-    print(f"[Caesar Decrypt] {cipher} -> {decrypted}")
-    return decrypted
+    return caesar_encrypt(cipher, -shift)
 
 # RC4 Encryption Implementation
 def rc4_encrypt(key, plaintext):
@@ -39,20 +35,14 @@ def rc4_encrypt(key, plaintext):
         S[i], S[j] = S[j], S[i]
         out.append(chr(ord(char) ^ S[(S[i] + S[j]) % 256]))
     
-    result = ''.join(out)
-    print(f"[RC4 Encrypt] {plaintext} -> {result}")
-    return result
+    return ''.join(out)
 
 def rc4_decrypt(key, ciphertext):
-    decrypted = rc4_encrypt(key, ciphertext)
-    print(f"[RC4 Decrypt] {ciphertext} -> {decrypted}")
-    return decrypted
+    return rc4_encrypt(key, ciphertext)
 
 # Simple Checksum for Message Integrity
 def checksum(message):
-    result = sum(bytearray(message.encode())) % 256
-    print(f"[Checksum] Message checksum: {result}")
-    return result
+    return sum(bytearray(message.encode())) % 256
 
 @dataclass
 class Client:
@@ -68,21 +58,17 @@ class ChatServer:
         print(f"[SERVER STARTED] Listening on {ip}:{port}")
 
     def send_encrypted_message(self, message: str, addr, shift: int, key: str):
-        print("\n=== ENCRYPTION PROCESS ===")
-        print(f"[Original Message] {message}")
+        print(f"\n[Original Message] {message}")
         
-        # Step 1: Caesar Cipher
+        # Encrypt message
         encrypted_msg = caesar_encrypt(message, shift)
-        
-        # Step 2: RC4 Encryption
         rc4_msg = rc4_encrypt(key, encrypted_msg)
         
-        # Step 3: Add checksum
+        # Add checksum
         checksum_value = checksum(rc4_msg)
         message_with_checksum = f"{rc4_msg}:{checksum_value}"
         
-        print(f"[Final Encrypted Message] {message_with_checksum}")
-        print("========================")
+        print(f"[Encrypted] {message_with_checksum}")
         
         self.server_socket.sendto(message_with_checksum.encode(), addr)
 
@@ -94,11 +80,10 @@ class ChatServer:
     def handle_client(self, addr, data, shift: int, key: str):
         try:
             message = data.decode()
-            print("\n=== DECRYPTION PROCESS ===")
-            print(f"[Received Encrypted Message] {message}")
+            print(f"\n[Received Encrypted] {message}")
             
             if ":" not in message:
-                print(f"[ERROR] Malformed message from {addr}: {message}")
+                print(f"[ERROR] Malformed message from {addr}")
                 self.send_encrypted_message("[ERROR] Malformed message", addr, shift, key)
                 return
                 
@@ -106,9 +91,8 @@ class ChatServer:
             msg_checksum = int(msg_checksum)
 
             # Verify checksum
-            calculated_checksum = checksum(rc4_msg)
-            if calculated_checksum != msg_checksum:
-                print(f"[ERROR] Checksum verification failed: {calculated_checksum} != {msg_checksum}")
+            if checksum(rc4_msg) != msg_checksum:
+                print("[ERROR] Message integrity check failed")
                 self.send_encrypted_message("[ERROR] Message integrity check failed", addr, shift, key)
                 return
 
@@ -116,8 +100,7 @@ class ChatServer:
             decrypted_rc4 = rc4_decrypt(key, rc4_msg)
             decrypted_message = caesar_decrypt(decrypted_rc4, shift)
             
-            print(f"[Final Decrypted Message] {decrypted_message}")
-            print("========================\n")
+            print(f"[Decrypted] {decrypted_message}")
 
             if addr not in self.clients:
                 if decrypted_message.startswith("/join "):
