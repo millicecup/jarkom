@@ -4,7 +4,7 @@ Merupakan sebuah aplikasi chat room dimana pengguna dapat berbicara dengan 1 ser
 Berbasis UDP dan sudah menggunakan cipher rc4 encryption
 
 ## cara menjalankan
-1. download dan simpan di folder yang sama
+1. download 'client.py' dan 'server.py' dan simpan di folder yang sama
 2. buka powershell
 3. arahkan ke folder tempat repository ini berada
    
