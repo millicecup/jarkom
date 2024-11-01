@@ -55,7 +55,7 @@ class ChatServer:
         self.server_socket.bind((self.get_server_ip(), port))
         self.clients = {}
         self.password = password
-        self.chat_log = 'chat_history.log'
+        self.chat_log = 'chat.log'
         self.chat_history = []
         self.load_chat_history()
         print(f"[SERVER STARTED] Listening on {self.get_server_ip()}:{port}")
@@ -139,7 +139,15 @@ class ChatServer:
                 if decrypted_message.startswith("/join "):
                     try:
                         _, username, user_password = decrypted_message.split()
+                        # Check for duplicate username
+                        if any(client.username == username for client in self.clients.values()):
+                            self.send_encrypted_message("[ERROR] Username already taken!", addr, shift, key)
+                            print(f"[DUPLICATE USERNAME] Connection attempt by {username} from {addr}")
+                            return
+                        
+                        # Check for correct password
                         if user_password == self.password:
+                            # Add client if username is unique
                             self.clients[addr] = Client(username, addr)
                             self.send_encrypted_message("[SERVER] You have joined the chat!", addr, shift, key)
                             print(f"[NEW CONNECTION] {username} joined from {addr}")

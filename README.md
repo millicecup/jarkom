@@ -14,8 +14,12 @@ python server.py
 tutup terminal 🙏
 ##
 ### untuk menjalankan client(s)
-#### python client.py /ip/ /port/ /username/ /password/
-contoh : python client.py 127.0.0.1 12345 hil secret
+python client.py 
+Enter server IP address: <ip yang tertulis>
+Enter server port: <port yang tertulis>
+Enter your username: <masukkan username yang diinginkan>
+Enter chat room password: <masukkan paswoord chat room>
+
 #### memberhentikan client(s)
 ketik ini di terminal/powershell client
 ##### /exit
@@ -28,6 +32,5 @@ ketik ini di terminal/powershell client
 *12345 = port*
 
 ### ganti password server
-pada line 147 (simple)
-pada line 164 (full encryption progress)
+pada line 147 di server.py
 
